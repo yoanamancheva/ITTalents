@@ -12,11 +12,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Demo  {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args)  {
 
         String path = "war-peace.txt";
+
         MyScanner myScanner = new MyScanner(path, 5);
         myScanner.countCommas();
+
 
         WordsThread.map = new ConcurrentHashMap<>();
         myScanner.showWordsFrequency();

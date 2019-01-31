@@ -1,9 +1,6 @@
 package myScanner;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Scanner;
@@ -16,12 +13,17 @@ public class MyScanner {
     private String text;
     private String[] wordsArray;
 
-    public MyScanner(String path, int threads) throws IOException{
+    public MyScanner(String path, int threads) {
         this.path = path;
         this.threads = threads;
 
         File file = new File(this.path);
-        Scanner sc = new Scanner(file);
+        Scanner sc = null;
+        try {
+            sc = new Scanner(file);
+        } catch (FileNotFoundException e) {
+            System.out.println("Problem with reading the file, " + e.getMessage());
+        }
         StringBuilder builder = new StringBuilder();
 
         while (sc.hasNextLine()) {
@@ -37,7 +39,7 @@ public class MyScanner {
     }
 
 
-    public void countCommas() throws InterruptedException{
+    public void countCommas(){
 
         long start = System.currentTimeMillis();
         for (int i = 1; i <= threads; i++) {
@@ -51,7 +53,11 @@ public class MyScanner {
         }
 
         for (CounterThread t : threadsSet) {
-            t.join();
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                System.out.println("Problem with joining the threads, " + e.getMessage());
+            }
         }
 
         int numberOfCommas = 0;
@@ -63,7 +69,7 @@ public class MyScanner {
 
     }
 
-    public void showWordsFrequency() throws InterruptedException{
+    public void showWordsFrequency() {
         Collection<WordsThread> threads2 = new HashSet<>();
         int startIndex = 0;
         int endIndex = wordsArray.length/threads-1;
@@ -83,7 +89,11 @@ public class MyScanner {
             wordsThread.start();
         }
         for (WordsThread t : threads2) {
-            t.join();
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                System.out.println("Problem with joining the threads, " + e.getMessage());
+            }
         }
         System.out.println(WordsThread.map);
 
